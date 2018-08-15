@@ -40,6 +40,4 @@ router.patch("/:productId", checkAuth, ProductsController.products_update_produc
 
 router.delete("/:productId", checkAuth, ProductsController.products_delete);
 
-router.get("/merchant/:merchantId", ProductsController.products_get_all_by_merchant_id);
-
 module.exports = router;

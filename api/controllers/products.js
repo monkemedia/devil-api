@@ -4,50 +4,6 @@ const jwt = require("jsonwebtoken");
 
 exports.products_get_all = (req, res, next) => {
   Product.find()
-    .select("name price _id productImage category username merchant_id description is_sale sale_price")
-    .exec()
-    .then(docs => {
-      const response = {
-        count: docs.length,
-        products: docs.map(doc => {
-          return {
-            name: doc.name,
-            price: doc.price,
-            product_image: doc.product_image,
-            category: doc.category,
-            username: doc.username,
-            merchant_id: doc.merchant_id,
-            description: doc.description,
-            is_sale: doc.is_sale,
-            sale_price: doc.sale_price,
-            _id: doc._id,
-            request: {
-              type: "GET",
-              url: "http://localhost:3000/products/" + doc._id
-            }
-          };
-        })
-      };
-      //   if (docs.length >= 0) {
-      res.status(200).json(response);
-      //   } else {
-      //       res.status(404).json({
-      //           message: 'No entries found'
-      //       });
-      //   }
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({
-        error: err
-      });
-    });
-};
-
-exports.products_get_all_by_merchant_id = (req, res, next) => {  
-  const id = req.params.merchantId;
-  Product.find({ merchant_id: id })
-    .select("name price _id productImage category username merchant_id description is_sale sale_price")
     .exec()
     .then(docs => {
       const response = {
@@ -209,3 +165,45 @@ exports.products_delete = (req, res, next) => {
       });
     });
 };
+
+exports.merchant_products_get_all = (req, res, next) => {  
+    const token = req.headers.authorization.split(" ")[1];
+    const decodedToken = jwt.decode(token);
+  
+    console.log('decodedToken.userId', decodedToken.userId)
+  
+    Product.find({ merchant_id: decodedToken.userId })
+      .exec()
+      .then(docs => {
+        console.log('docs', docs)
+        const response = {
+          count: docs.length,
+          products: docs.map(doc => {
+            return {
+              name: doc.name,
+              price: doc.price,
+              product_image: doc.product_image,
+              category: doc.category,
+              username: doc.username,
+              merchant_id: doc.merchant_id,
+              description: doc.description,
+              is_sale: doc.is_sale,
+              sale_price: doc.sale_price,
+              _id: doc._id,
+              request: {
+                type: "GET",
+                url: "http://localhost:3000/merchant-products/"
+              }
+            };
+          })
+        };
+  
+        res.status(200).json(response);
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(500).json({
+          error: err
+        });
+      });
+  };
