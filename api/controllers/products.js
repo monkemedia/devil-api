@@ -15,10 +15,11 @@ exports.products_get_all = (req, res, next) => {
             product_image: doc.product_image,
             category: doc.category,
             username: doc.username,
-            merchant_id: doc.merchant_id,
+            vendor_id: doc.vendor_id,
             description: doc.description,
             is_sale: doc.is_sale,
             sale_price: doc.sale_price,
+            stock: doc.stock,
             _id: doc._id,
             request: {
               type: "GET",
@@ -53,12 +54,13 @@ exports.products_create_product = (req, res, next) => {
     price: req.body.price,
     category: req.body.category,
     username: req.body.username,
-    merchant_id: decodedToken.userId,
+    vendor_id: decodedToken.userId,
     username: decodedToken.username,
     store_front: req.body.store_front,
     description: req.body.description,
     is_sale: req.body.is_sale,
-    sale_price: req.body.sale_price
+    sale_price: req.body.sale_price,
+    stock: req.body.stock
   });
   product
     .save()
@@ -71,11 +73,12 @@ exports.products_create_product = (req, res, next) => {
           price: result.price,
           category: result.category,
           username: result.username,
-          merchant_id: result.merchant_id,
+          vendor_id: result.vendor_id,
           store_front: result.store_front,
           description: result.description,
           is_sale: result.is_sale,
           sale_price: result.sale_price,
+          stock: result.stock,
           _id: result._id,
           request: {
             type: "GET",
@@ -166,13 +169,13 @@ exports.products_delete = (req, res, next) => {
     });
 };
 
-exports.merchant_products_get_all = (req, res, next) => {  
+exports.vendor_products_get_all = (req, res, next) => {  
     const token = req.headers.authorization.split(" ")[1];
     const decodedToken = jwt.decode(token);
   
     console.log('decodedToken.userId', decodedToken.userId)
   
-    Product.find({ merchant_id: decodedToken.userId })
+    Product.find({ vendor_id: decodedToken.userId })
       .exec()
       .then(docs => {
         console.log('docs', docs)
@@ -185,14 +188,15 @@ exports.merchant_products_get_all = (req, res, next) => {
               product_image: doc.product_image,
               category: doc.category,
               username: doc.username,
-              merchant_id: doc.merchant_id,
+              vendor_id: doc.vendor_id,
               description: doc.description,
               is_sale: doc.is_sale,
               sale_price: doc.sale_price,
               _id: doc._id,
+              stock: doc.stock,
               request: {
                 type: "GET",
-                url: "http://localhost:3000/merchant-products/"
+                url: "http://localhost:3000/vendor-products/"
               }
             };
           })
