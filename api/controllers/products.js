@@ -98,11 +98,11 @@ exports.products_create_product = (req, res, next) => {
 exports.products_get_product = (req, res, next) => {
   const id = req.params.productId;
   Product.findById(id)
-    .select("name price _id productImage")
+    .select("__v")
     .exec()
     .then(doc => {
       console.log("From database", doc);
-      if (doc) {
+      if (doc && doc.store_front) {
         res.status(200).json({
           product: doc,
           request: {
@@ -170,8 +170,6 @@ exports.vendor_products_get_all = (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
     const decodedToken = jwt.decode(token);
   
-    console.log('decodedToken.userId', decodedToken.userId)
-  
     Product.find({ vendor_id: decodedToken.userId })
       .exec()
       .then(docs => {
@@ -206,4 +204,31 @@ exports.vendor_products_get_all = (req, res, next) => {
           error: err
         });
       });
+};
+
+exports.vendor_products_get_product_by_id = (req, res, next) => {
+  const id = req.params.productId;
+  Product.findById(id)
+    .select("__v")
+    .exec()
+    .then(doc => {
+      console.log("From database", doc);
+      if (doc) {
+        res.status(200).json({
+          product: doc,
+          request: {
+            type: "GET",
+            url: "http://localhost:3000/products"
+          }
+        });
+      } else {
+        res
+          .status(404)
+          .json({ message: "No valid entry found for provided ID" });
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ error: err });
+    });
 };
