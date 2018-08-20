@@ -124,11 +124,8 @@ exports.products_get_product = (req, res, next) => {
 
 exports.products_update_product = (req, res, next) => {
   const id = req.params.productId;
-  const updateOps = {};
-  for (const ops of req.body) {
-    updateOps[ops.propName] = ops.value;
-  }
-  Product.update({ _id: id }, { $set: updateOps })
+
+  Product.update({ _id: id }, { $set: req.body })
     .exec()
     .then(result => {
       res.status(200).json({
@@ -178,7 +175,6 @@ exports.vendor_products_get_all = (req, res, next) => {
     Product.find({ vendor_id: decodedToken.userId })
       .exec()
       .then(docs => {
-        console.log('docs', docs)
         const response = {
           count: docs.length,
           products: docs.map(doc => {
@@ -210,4 +206,4 @@ exports.vendor_products_get_all = (req, res, next) => {
           error: err
         });
       });
-  };
+};

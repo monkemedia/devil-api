@@ -36,7 +36,7 @@ router.post("/", upload.single('productImage'), ProductsController.products_crea
 
 router.get("/:productId", ProductsController.products_get_product);
 
-router.patch("/:productId", checkAuth, ProductsController.products_update_product);
+router.put("/:productId", checkAuth, ProductsController.products_update_product);
 
 router.delete("/:productId", checkAuth, ProductsController.products_delete);
 
