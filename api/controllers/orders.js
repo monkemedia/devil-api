@@ -5,7 +5,7 @@ const Product = require("../models/product");
 
 exports.orders_get_all = (req, res, next) => {
   Order.find()
-    .select("__v")
+    .select("-__v")
     .populate("product", "name")
     .exec()
     .then(docs => {

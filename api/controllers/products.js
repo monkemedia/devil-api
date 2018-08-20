@@ -98,7 +98,7 @@ exports.products_create_product = (req, res, next) => {
 exports.products_get_product = (req, res, next) => {
   const id = req.params.productId;
   Product.findById(id)
-    .select("__v")
+    .select("-__v")
     .exec()
     .then(doc => {
       console.log("From database", doc);
@@ -209,7 +209,7 @@ exports.vendor_products_get_all = (req, res, next) => {
 exports.vendor_products_get_product_by_id = (req, res, next) => {
   const id = req.params.productId;
   Product.findById(id)
-    .select("__v")
+    .select("-__v")
     .exec()
     .then(doc => {
       console.log("From database", doc);
