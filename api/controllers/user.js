@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
 const User = require("../models/user");
 
 exports.user_signup = (req, res, next) => {
@@ -73,26 +72,38 @@ exports.user_login = (req, res, next) => {
           });
         }
         if (result) {
+          const userObj = {
+            email: user[0].email,
+            userId: user[0]._id
+          };
           const token = jwt.sign(
-            {
-              email: user[0].email,
-              userId: user[0]._id,
-              username: user[0].username
-            },
-            process.env.JWT_KEY,
+            userObj,
+            process.env.TOKEN_KEY,
             {
               expiresIn: "1h"
             }
           );
-          return res.status(200).json({
+          const refreshToken = jwt.sign(
+            {
+              email: user[0].email,
+              userId: user[0]._id
+            }, 
+            process.env.REFRESH_TOKEN_KEY, 
+            {
+              expiresIn: "30 days"
+            }
+          );
+          const response = {
             message: "Auth successful",
             token: token,
+            refresh_token: refreshToken,
             email: user[0].email,
             username: user[0].username,
             vendor: user[0].vendor,
             name: user[0].name,
             _id: user[0]._id
-          });
+          };
+          return res.status(200).json(response);
         }
         res.status(401).json({
           message: "Auth failed"
@@ -134,4 +145,28 @@ exports.user_delete = (req, res, next) => {
         error: err
       });
     });
+};
+
+exports.token = (req, res, next) => {
+  const decoded = jwt.verify(req.body.refresh_token, process.env.REFRESH_TOKEN_KEY);
+  const user = {
+    email: req.body.email,
+    userId: req.body.userId
+  };
+
+  if (decoded && (decoded.email === user.email && decoded.userId === user.userId)) {
+    const token = jwt.sign(
+      user,
+      process.env.TOKEN_KEY,
+      {
+        expiresIn: "1h"
+      }
+    );
+    const response = {
+      token: token
+    };
+    res.status(200).json(response); 
+  } else {
+    res.status(404).send('Invalid request')
+  }
 };
