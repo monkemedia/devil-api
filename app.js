@@ -9,6 +9,8 @@ const vendorProductRoutes = require("./api/routes/vendorProducts");
 const orderRoutes = require("./api/routes/orders");
 const userRoutes = require('./api/routes/user');
 
+const cors = require('cors');
+
 mongoose.connect(
   "mongodb://monkemedia:" +
     process.env.MONGO_ATLAS_PW +
@@ -19,6 +21,7 @@ app.use(morgan("dev"));
 app.use('/uploads', express.static('uploads'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cors());
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");

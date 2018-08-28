@@ -73,24 +73,22 @@ exports.user_login = (req, res, next) => {
         }
         if (result) {
           const userObj = {
-            email: user[0].email,
             userId: user[0]._id
           };
           const token = jwt.sign(
             userObj,
             process.env.TOKEN_KEY,
             {
-              expiresIn: "1h"
+              expiresIn: 60
             }
           );
           const refreshToken = jwt.sign(
             {
-              email: user[0].email,
               userId: user[0]._id
             }, 
             process.env.REFRESH_TOKEN_KEY, 
             {
-              expiresIn: "30 days"
+              expiresIn: "1h"
             }
           );
           const response = {
@@ -150,20 +148,28 @@ exports.user_delete = (req, res, next) => {
 exports.token = (req, res, next) => {
   const decoded = jwt.verify(req.body.refresh_token, process.env.REFRESH_TOKEN_KEY);
   const user = {
-    email: req.body.email,
     userId: req.body.userId
   };
 
-  if (decoded && (decoded.email === user.email && decoded.userId === user.userId)) {
+  if (decoded && (decoded.userId === user.userId)) {
+    console.log('DECODED')
     const token = jwt.sign(
       user,
       process.env.TOKEN_KEY,
+      {
+        expiresIn: 60
+      }
+    );
+    const refreshToken = jwt.sign(
+      user, 
+      process.env.REFRESH_TOKEN_KEY, 
       {
         expiresIn: "1h"
       }
     );
     const response = {
-      token: token
+      token: token,
+      refresh_token: refreshToken
     };
     res.status(200).json(response); 
   } else {
