@@ -37,10 +37,10 @@ app.use((req, res, next) => {
 });
 
 // Routes which should handle requests
-app.use("/v1/products", productRoutes);
-app.use("/v1/vendor-products", vendorProductRoutes);
-app.use("/v1/orders", orderRoutes);
-app.use("/v1/user", userRoutes);
+app.use("/api/v1/products", productRoutes);
+app.use("/api/v1/vendor-products", vendorProductRoutes);
+app.use("/api/v1/orders", orderRoutes);
+app.use("/api/v1/user", userRoutes);
 
 app.use((req, res, next) => {
   const error = new Error("Not found");
