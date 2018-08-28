@@ -186,6 +186,7 @@ exports.vendor_products_get_all = (req, res, next) => {
               description: doc.description,
               is_sale: doc.is_sale,
               sale_price: doc.sale_price,
+              store_front: doc.store_front,
               _id: doc._id,
               stock: doc.stock,
               request: {
