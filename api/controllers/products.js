@@ -53,9 +53,8 @@ exports.products_create_product = (req, res, next) => {
     name: req.body.name,
     price: req.body.price,
     category: req.body.category,
-    username: req.body.username,
     vendor_id: decodedToken.userId,
-    username: decodedToken.username,
+    username: req.body.username,
     store_front: req.body.store_front,
     description: req.body.description,
     is_sale: req.body.is_sale,
@@ -68,7 +67,7 @@ exports.products_create_product = (req, res, next) => {
       console.log(result);
       res.status(201).json({
         message: "Created product successfully",
-        createdProduct: {
+        product: {
           name: result.name,
           price: result.price,
           category: result.category,
