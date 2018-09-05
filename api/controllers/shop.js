@@ -15,6 +15,7 @@ exports.shop_get_all = (req, res, next) => {
             country: doc.country,
             currency: doc.currency,
             user_id: doc.user_id,
+            setup_complete: doc.setup_complete,
             request: {
               type: "GET",
               url: "http://localhost:3000/shop/" + doc._id
@@ -33,38 +34,29 @@ exports.shop_get_all = (req, res, next) => {
 };
 
 exports.shop_create_shop = (req, res, next) => {
-  const username = req.params.username;
+  const shopId = req.params.shopId;
 
-  Shop.find({ name: username })
-    .exec()
-    .then(user => {
-      if (user.length >= 1) {
-        return res.status(409).json({
-          message: "Shop already exists"
-        });
-      } 
+  const shop = new Shop({
+    _id: shopId,
+    language: req.body.language,
+    name: req.body.username,
+    country: req.body.country,
+    currency: req.body.currency,
+    user_id: req.body.user_id,
+    setup_complete: false
+  });
 
-      const shop = new Shop({
-        _id: new mongoose.Types.ObjectId(),
-        language: req.body.language,
-        name: username,
-        country: req.body.country,
-        currency: req.body.currency,
-        user_id: req.body.user_id
+  shop
+    .save()
+    .then(result => {
+      res.status(201).json({
+        message: "Shop created"
       });
-
-      shop
-        .save()
-        .then(result => {
-          res.status(201).json({
-            message: "Shop created"
-          });
-        })
-        .catch(err => {
-          res.status(500).json({
-              error: err
-          });
-        });
+    })
+    .catch(err => {
+      res.status(500).json({
+          error: err
+      });
     });
 };
 

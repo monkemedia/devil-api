@@ -6,7 +6,8 @@ const shopSchema = mongoose.Schema({
     name: { type: String, required: false },
     country: { type: String, required: false },
     currency: { type: String, required: false },
-    user_id: { type: String, required: false }
+    user_id: { type: String, required: false },
+    setup_complete: { type: Boolean, required: false }
 });
 
 module.exports = mongoose.model('Shop', shopSchema);
