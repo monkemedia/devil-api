@@ -15,7 +15,8 @@ const userSchema = mongoose.Schema({
     username: { type: String, required: true },
     vendor: { type: Boolean, required: true },
     password: { type: String, required: true },
-    name: { type: String, required: true }
+    name: { type: String, required: true },
+    shop_id: { type: String, required: false }
 });
 
 userSchema.plugin(uniqueValidator);

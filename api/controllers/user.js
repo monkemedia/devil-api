@@ -35,8 +35,10 @@ exports.user_signup = (req, res, next) => {
                 username: req.body.username,
                 vendor: req.body.vendor,
                 name: req.body.name,
-                password: hash
+                password: hash,
+                shop_id: req.body.vendor ? new mongoose.Types.ObjectId() : null
               });
+
               user
                 .save()
                 .then(result => {
@@ -118,6 +120,7 @@ exports.user_login = (req, res, next) => {
 
 exports.all_users = (req, res, next) => {
   User.find()
+    .select("-__v")
     .then(result => {
       res.status(200).json(result);
     })
