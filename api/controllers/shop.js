@@ -34,10 +34,9 @@ exports.shop_get_all = (req, res, next) => {
 };
 
 exports.shop_create_shop = (req, res, next) => {
-  const shopId = req.params.shopId;
 
   const shop = new Shop({
-    _id: shopId,
+    _id: new mongoose.Types.ObjectId(),
     language: req.body.language,
     name: req.body.username,
     country: req.body.country,
@@ -50,6 +49,15 @@ exports.shop_create_shop = (req, res, next) => {
     .save()
     .then(result => {
       res.status(201).json({
+        shop: {
+          _id: result._id,
+          language: result.language,
+          name: result.username,
+          country: result.country,
+          currency: result.currency,
+          user_id: result.user_id,
+          setup_complete: result.setup_complete
+        },
         message: "Shop created"
       });
     })
@@ -72,7 +80,7 @@ exports.shop_get_shop = (req, res, next) => {
           shop: doc,
           request: {
             type: "GET",
-            url: "http://localhost:3000/shop/" + doc.username
+            url: "http://localhost:3000/shop/" + doc._id
           }
         });
       } else {

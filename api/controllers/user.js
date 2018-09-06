@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
+const uuidv1 = require('uuid/v1');
 
 exports.user_signup = (req, res, next) => {
   User.find({ email: req.body.email })
@@ -29,20 +30,29 @@ exports.user_signup = (req, res, next) => {
                 error: err
               });
             } else {
+              const newId = new mongoose.Types.ObjectId()
               const user = new User({
-                _id: new mongoose.Types.ObjectId(),
+                _id: newId,
                 email: req.body.email,
                 username: req.body.username,
                 vendor: req.body.vendor,
                 name: req.body.name,
                 password: hash,
-                shop_id: req.body.vendor ? new mongoose.Types.ObjectId() : null
+                shop_id: req.body.shop_id
               });
 
               user
                 .save()
                 .then(result => {
                   res.status(201).json({
+                    user: {
+                      _id: result._id,
+                      email: result.email,
+                      username: result.username,
+                      vendor: result.vendor,
+                      name: result.name,
+                      shop_id: result.shop_id
+                    },
                     message: "User created"
                   });
                 })
@@ -81,7 +91,7 @@ exports.user_login = (req, res, next) => {
             userObj,
             process.env.TOKEN_KEY,
             {
-              expiresIn: 60
+              expiresIn: "1h"
             }
           );
           const refreshToken = jwt.sign(
@@ -101,7 +111,8 @@ exports.user_login = (req, res, next) => {
             username: user[0].username,
             vendor: user[0].vendor,
             name: user[0].name,
-            _id: user[0]._id
+            _id: user[0]._id,
+            shop_id: user[0].shop_id
           };
           return res.status(200).json(response);
         }
