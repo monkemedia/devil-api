@@ -68,6 +68,28 @@ exports.shop_create_shop = (req, res, next) => {
     });
 };
 
+exports.shop_update_shop = (req, res, next) => {
+  const id = req.params.shopId;
+
+  Shop.update({ _id: id }, { $set: req.body })
+    .exec()
+    .then(result => {
+      res.status(200).json({
+        message: "Shop updated",
+        request: {
+          type: "GET",
+          url: "http://localhost:3000/shop/" + id
+        }
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
+};
+
 exports.shop_get_shop = (req, res, next) => {
   const shopId = req.params.shopId;
 
