@@ -7,7 +7,8 @@ const shopSchema = mongoose.Schema({
     country: { type: String, required: false },
     currency: { type: String, required: false },
     user_id: { type: String, required: false },
-    setup_complete: { type: Boolean, required: false }
+    setup_complete: { type: Boolean, required: false },
+    step: { type: Number, required: false }
 });
 
 module.exports = mongoose.model('Shop', shopSchema);

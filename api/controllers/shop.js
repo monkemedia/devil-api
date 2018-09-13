@@ -9,13 +9,18 @@ exports.shop_get_all = (req, res, next) => {
         count: docs.length,
         shop: docs.map(doc => {
           return {
-            _id: doc._id,
-            language: doc.language,
-            name: doc.name,
-            country: doc.country,
-            currency: doc.currency,
-            user_id: doc.user_id,
-            setup_complete: doc.setup_complete,
+            shop: {
+              _id: doc._id,
+              language: doc.language,
+              name: doc.name,
+              country: doc.country,
+              currency: doc.currency,
+              user_id: doc.user_id
+            },
+            progress: {
+              step: doc.step,
+              setup_complete: doc.setup_complete
+            },
             request: {
               type: "GET",
               url: "http://localhost:3000/shop/" + doc._id
@@ -42,7 +47,8 @@ exports.shop_create_shop = (req, res, next) => {
     country: req.body.country,
     currency: req.body.currency,
     user_id: req.body.user_id,
-    setup_complete: false
+    setup_complete: false,
+    step: req.body.step
   });
 
   shop
@@ -55,7 +61,10 @@ exports.shop_create_shop = (req, res, next) => {
           name: result.username,
           country: result.country,
           currency: result.currency,
-          user_id: result.user_id,
+          user_id: result.user_id
+        },
+        progress: {
+          step: result.step,
           setup_complete: result.setup_complete
         },
         message: "Shop created"
@@ -74,6 +83,7 @@ exports.shop_update_shop = (req, res, next) => {
   Shop.update({ _id: id }, { $set: req.body })
     .exec()
     .then(result => {
+      console.log('update-shop', result)
       res.status(200).json({
         message: "Shop updated",
         request: {
@@ -99,7 +109,18 @@ exports.shop_get_shop = (req, res, next) => {
     .then(doc => {
       if (doc) {
         res.status(200).json({
-          shop: doc,
+          shop: {
+            _id: doc._id,
+            language: doc.language,
+            name: doc.username,
+            country: doc.country,
+            currency: doc.currency,
+            user_id: doc.user_id
+          },
+          progress: {
+            step: doc.step,
+            setup_complete: doc.setup_complete
+          },
           request: {
             type: "GET",
             url: "http://localhost:3000/shop/" + doc._id
