@@ -9,6 +9,7 @@ const vendorProductRoutes = require("./api/routes/vendorProducts");
 const orderRoutes = require("./api/routes/orders");
 const userRoutes = require('./api/routes/user');
 const shopRoutes = require('./api/routes/shop');
+const stripeRoutes = require('./api/routes/stripe');
 
 const cors = require('cors');
 
@@ -43,6 +44,7 @@ app.use("/api/v1/vendor-products", vendorProductRoutes);
 app.use("/api/v1/orders", orderRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/shop", shopRoutes);
+app.use("/api/v1/stripe", stripeRoutes);
 
 app.use((req, res, next) => {
   const error = new Error("Not found");
