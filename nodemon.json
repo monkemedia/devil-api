@@ -1,8 +1,0 @@
-{
-    "env": {
-        "MONGO_ATLAS_PW": "1111qqqq",
-        "TOKEN_KEY": "secret",
-        "REFRESH_TOKEN_KEY": "secret_2",
-        "STRIPE_KEY": "sk_test_h6JCY8bTshgzwjeucvlzgDjI"
-    }
-}
